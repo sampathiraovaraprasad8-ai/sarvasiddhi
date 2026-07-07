@@ -1,9 +1,9 @@
 # Stage 1: Build the React Frontend
 FROM node:20-alpine AS frontend-builder
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
+WORKDIR /app/sarvasiddhi
+COPY sarvasiddhi/package*.json ./
 RUN npm install
-COPY frontend/ ./
+COPY sarvasiddhi/ ./
 RUN npm run build
 
 # Stage 2: Build the Backend and Serve
@@ -13,7 +13,7 @@ COPY package*.json ./
 RUN npm install --only=production
 COPY . .
 # Copy compiled frontend from Stage 1
-COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
+COPY --from=frontend-builder /app/sarvasiddhi/dist ./sarvasiddhi/dist
 
 # Expose port and start
 EXPOSE 5000

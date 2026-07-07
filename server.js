@@ -322,7 +322,7 @@ app.post('/api/admin/notifications/:id/read', requireAdmin, (req, res) => {
 
 
 // Serve Static Assets in Production
-app.use(express.static(path.join(__dirname, 'frontend/dist')));
+app.use(express.static(path.join(__dirname, 'sarvasiddhi/dist')));
 
 // Fallback to React Index.html for Client Routing
 app.get('*', (req, res) => {
@@ -330,7 +330,7 @@ app.get('*', (req, res) => {
   if (req.originalUrl.startsWith('/api')) {
     return res.status(404).json({ error: 'API route not found' });
   }
-  res.sendFile(path.join(__dirname, 'frontend/dist/index.html'));
+  res.sendFile(path.join(__dirname, 'sarvasiddhi/dist/index.html'));
 });
 
 // Start Server

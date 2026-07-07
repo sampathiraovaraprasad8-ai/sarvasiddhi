@@ -1,16 +1,16 @@
 # Dependency directories
 node_modules/
-frontend/node_modules/
+sarvasiddhi/node_modules/
 
 # Local databases
 db.json
 
 # Image uploads
 uploads/
-frontend/public/uploads/
+sarvasiddhi/public/uploads/
 
 # Production builds
-frontend/dist/
+sarvasiddhi/dist/
 dist/
 
 # Environment files
