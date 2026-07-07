@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
-import { LayoutDashboard, ShoppingBag, ClipboardList, Tag, Bell, AlertTriangle } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, ClipboardList, Tag, Bell, AlertTriangle, Users } from 'lucide-react';
 
 export default function AdminLayout({ children }) {
   const location = useLocation();
@@ -47,6 +47,11 @@ export default function AdminLayout({ children }) {
           <li>
             <Link to="/admin/offers" className={`sidebar-link ${isActive('/admin/offers') ? 'active' : ''}`}>
               <Tag size={18} /> Manage Offers
+            </Link>
+          </li>
+          <li>
+            <Link to="/admin/customers" className={`sidebar-link ${isActive('/admin/customers') ? 'active' : ''}`}>
+              <Users size={18} /> Manage Customers
             </Link>
           </li>
         </ul>

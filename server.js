@@ -111,6 +111,18 @@ app.get('/api/auth/me', authenticateToken, (req, res) => {
   res.json(userWithoutPassword);
 });
 
+// GET REGISTERED USERS LIST (Admin Only)
+app.get('/api/admin/users', requireAdmin, (req, res) => {
+  try {
+    const users = db.getUsers();
+    // Exclude password hashes for security
+    const safeUsers = users.map(({ password_hash, ...u }) => u);
+    res.json(safeUsers);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
 
 // PRODUCTS ENDPOINTS
 app.get('/api/products', (req, res) => {

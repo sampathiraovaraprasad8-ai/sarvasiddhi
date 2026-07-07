@@ -152,18 +152,7 @@ export default function Shop() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div style={{
-        background: 'white',
-        padding: '25px',
-        borderRadius: 'var(--border-radius-md)',
-        boxShadow: 'var(--shadow-sm)',
-        marginBottom: '40px',
-        border: '1px solid rgba(92,6,18,0.05)',
-        display: 'grid',
-        gridTemplateColumns: '1fr 200px 180px',
-        gap: '20px',
-        alignItems: 'center'
-      }}>
+      <div className="shop-filter-bar">
         {/* Search Input with Autocomplete Dropdown */}
         <div style={{ position: 'relative' }} onMouseLeave={() => setShowSuggestions(false)}>
           <Search size={18} style={{ position: 'absolute', left: '15px', top: '50%', transform: 'translateY(-50%)', color: 'var(--color-text-muted)' }} />

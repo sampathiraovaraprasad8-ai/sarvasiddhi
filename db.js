@@ -199,6 +199,10 @@ seedDatabase();
 // DATABASE API EXPORTS
 const dbAPI = {
   // Users
+  getUsers() {
+    const db = readDb();
+    return db.users;
+  },
   getUserByEmail(email) {
     const db = readDb();
     return db.users.find(u => u.email.toLowerCase() === email.toLowerCase());
