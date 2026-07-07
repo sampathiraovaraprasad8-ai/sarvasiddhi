@@ -23,6 +23,7 @@ import Dashboard from './views/Admin/Dashboard';
 import Products from './views/Admin/Products';
 import Orders from './views/Admin/Orders';
 import Offers from './views/Admin/Offers';
+import Customers from './views/Admin/Customers';
 
 function AppContent() {
   return (
@@ -71,6 +72,14 @@ function AppContent() {
             element={
               <AdminRoute>
                 <Offers />
+              </AdminRoute>
+            } 
+          />
+          <Route 
+            path="/admin/customers" 
+            element={
+              <AdminRoute>
+                <Customers />
               </AdminRoute>
             } 
           />
