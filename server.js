@@ -70,7 +70,8 @@ app.post('/api/auth/register', (req, res) => {
   }
   try {
     let role = 'customer';
-    if (adminCode && adminCode.trim() === 'SARVASIDDHI_ADMIN_2026') {
+    const serverAdminCode = process.env.ADMIN_SECRET_CODE || 'SARVASIDDHI_ADMIN_2026';
+    if (adminCode && adminCode.trim() === serverAdminCode) {
       role = 'admin';
     }
     const user = db.createUser(name, email, password, role);

@@ -292,20 +292,6 @@ export default function Login() {
           )}
         </div>
 
-        <div style={{
-          marginTop: '30px',
-          padding: '12px',
-          backgroundColor: 'rgba(92,6,18,0.03)',
-          border: '1px dashed rgba(92,6,18,0.1)',
-          borderRadius: '6px',
-          fontSize: '0.8rem',
-          color: 'var(--color-text-muted)',
-          lineHeight: '1.4'
-        }}>
-          💡 <b>Want to log in with your own Admin Email?</b><br />
-          Click <b>Register here</b> above and enter the secret admin code:<br />
-          <code style={{ userSelect: 'all', fontWeight: 'bold', fontSize: '0.9rem', color: 'var(--color-primary-dark)' }}>SARVASIDDHI_ADMIN_2026</code>
-        </div>
       </div>
     </div>
   );
