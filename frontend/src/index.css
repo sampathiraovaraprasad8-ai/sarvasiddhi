@@ -1131,20 +1131,31 @@ button, input, select, textarea {
 
 .shop-filter-bar {
   background: white;
-  padding: 25px;
+  padding: 20px;
   border-radius: var(--border-radius-md);
   box-shadow: var(--shadow-sm);
   margin-bottom: 40px;
   border: 1px solid rgba(92,6,18,0.05);
-  display: grid;
-  grid-template-columns: 1fr 200px 180px;
+  display: flex;
+  flex-wrap: wrap;
   gap: 20px;
   align-items: center;
 }
 
-@media (max-width: 768px) {
+.shop-filter-bar > div:first-child {
+  flex: 2 1 300px; /* Search wrapper expands to fill space, wraps at 300px */
+}
+
+.shop-filter-bar > div:nth-child(2) {
+  flex: 1 1 200px;
+}
+
+.shop-filter-bar > div:nth-child(3) {
+  flex: 1 1 180px;
+}
+
+@media (max-width: 480px) {
   .shop-filter-bar {
-    grid-template-columns: 1fr !important;
     padding: 15px;
     gap: 15px;
   }
