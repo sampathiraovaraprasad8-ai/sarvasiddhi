@@ -5,6 +5,7 @@ const path = require('path');
 const db = require('./db');
 const multer = require('multer');
 const fs = require('fs');
+const cloudinary = require('cloudinary').v2;
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -164,11 +165,44 @@ app.delete('/api/products/:id', requireAdmin, (req, res) => {
 });
 
 // UPLOAD IMAGE ENDPOINT (Admin Only)
-app.post('/api/upload', requireAdmin, upload.single('image'), (req, res) => {
+app.post('/api/upload', requireAdmin, upload.single('image'), async (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No file uploaded' });
   }
-  res.status(201).json({ url: `/uploads/${req.file.filename}` });
+  
+  try {
+    const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
+    const apiKey = process.env.CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    
+    if (cloudName && apiKey && apiSecret) {
+      cloudinary.config({
+        cloud_name: cloudName,
+        api_key: apiKey,
+        api_secret: apiSecret
+      });
+      
+      console.log('Uploading image to Cloudinary...');
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'sarvasiddhi'
+      });
+      
+      // Attempt to delete local temporary file after successful cloud upload
+      try {
+        fs.unlinkSync(req.file.path);
+      } catch (err) {
+        console.error('Failed to delete temp local upload:', err);
+      }
+      
+      return res.status(201).json({ url: result.secure_url });
+    }
+    
+    // Fallback to local URL for development
+    res.status(201).json({ url: `/uploads/${req.file.filename}` });
+  } catch (err) {
+    console.error('Cloudinary upload failure:', err);
+    res.status(500).json({ error: 'Failed to upload image to Cloudinary storage' });
+  }
 });
 
 
@@ -334,10 +368,17 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'sarvasiddhi/dist/index.html'));
 });
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`==================================================`);
-  console.log(` Sarvasiddhi Backend Server running on port ${PORT} `);
-  console.log(` Mode: Production & Development concurrently`);
-  console.log(`==================================================`);
+// Start Server after Database Initialization
+db.init().then(() => {
+  app.listen(PORT, () => {
+    console.log(`==================================================`);
+    console.log(` Sarvasiddhi Backend Server running on port ${PORT} `);
+    console.log(` Mode: Production & Development concurrently`);
+    console.log(`==================================================`);
+  });
+}).catch(err => {
+  console.error("Database initialization failed:", err);
+  app.listen(PORT, () => {
+    console.log(` Sarvasiddhi Server running on port ${PORT} (local fallback) `);
+  });
 });

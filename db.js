@@ -1,12 +1,71 @@
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
+const { MongoClient } = require('mongodb');
 
 const persistentDir = process.env.PERSISTENT_DIR || __dirname;
 if (persistentDir !== __dirname && !fs.existsSync(persistentDir)) {
   fs.mkdirSync(persistentDir, { recursive: true });
 }
 const DB_PATH = path.join(persistentDir, 'db.json');
+
+// MongoDB Atlas Backup configurations
+const mongoUri = process.env.MONGODB_URI;
+let mongoClient = null;
+let syncTimeout = null;
+
+// Download database state from MongoDB Atlas
+async function downloadBackup() {
+  if (!mongoUri) return;
+  try {
+    console.log('Connecting to MongoDB Atlas to fetch database backup...');
+    mongoClient = new MongoClient(mongoUri);
+    await mongoClient.connect();
+    
+    const database = mongoClient.db('sarvasiddhi');
+    const collection = database.collection('backups');
+    
+    const doc = await collection.findOne({ _id: 'sarvasiddhi_db' });
+    if (doc && doc.data) {
+      console.log('Successfully downloaded database backup from MongoDB Atlas.');
+      dbCache = doc.data;
+      fs.writeFileSync(DB_PATH, JSON.stringify(dbCache, null, 2), 'utf8');
+    } else {
+      console.log('No backup found in MongoDB Atlas. Initializing a new database document...');
+    }
+  } catch (err) {
+    console.error('Error downloading backup from MongoDB Atlas:', err);
+  }
+}
+
+// Upload database state to MongoDB Atlas (debounced to avoid spamming the cloud DB)
+function queueCloudSync() {
+  if (!mongoUri) return;
+  
+  if (syncTimeout) clearTimeout(syncTimeout);
+  
+  syncTimeout = setTimeout(async () => {
+    try {
+      if (!mongoClient) {
+        mongoClient = new MongoClient(mongoUri);
+        await mongoClient.connect();
+      }
+      const database = mongoClient.db('sarvasiddhi');
+      const collection = database.collection('backups');
+      
+      const dbData = readDb();
+      await collection.updateOne(
+        { _id: 'sarvasiddhi_db' },
+        { $set: { data: dbData, updated_at: new Date() } },
+        { upsert: true }
+      );
+      console.log('Database synced successfully to MongoDB Atlas.');
+    } catch (err) {
+      console.error('Background sync to MongoDB Atlas failed:', err);
+      mongoClient = null; // Reset client on error to trigger reconnect
+    }
+  }, 2000);
+}
 
 // Initialize database template
 const defaultDb = {
@@ -44,6 +103,7 @@ function writeDb() {
   if (!dbCache) return;
   try {
     fs.writeFileSync(DB_PATH, JSON.stringify(dbCache, null, 2), 'utf8');
+    queueCloudSync();
   } catch (err) {
     console.error('Error writing to database file:', err);
   }
@@ -197,8 +257,7 @@ function seedDatabase() {
   }
 }
 
-// Initial Seed Call
-seedDatabase();
+// Seeding is now handled in the async init method to avoid overriding cloud state on import.
 
 // DATABASE API EXPORTS
 const dbAPI = {
@@ -444,6 +503,11 @@ const dbAPI = {
     const deleted = db.offers.splice(index, 1);
     writeDb();
     return deleted[0];
+  }
+  // Initialize Database: download backup, then seed if necessary
+  async init() {
+    await downloadBackup();
+    seedDatabase();
   }
 };
 
