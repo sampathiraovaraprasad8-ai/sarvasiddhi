@@ -503,7 +503,7 @@ const dbAPI = {
     const deleted = db.offers.splice(index, 1);
     writeDb();
     return deleted[0];
-  }
+  },
   // Initialize Database: download backup, then seed if necessary
   async init() {
     await downloadBackup();
