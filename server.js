@@ -11,7 +11,8 @@ const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'sarvasiddhi_secret_key_108';
 
 // Ensure uploads folder exists
-const UPLOADS_DIR = path.join(__dirname, 'uploads');
+const persistentDir = process.env.PERSISTENT_DIR || __dirname;
+const UPLOADS_DIR = path.join(persistentDir, 'uploads');
 if (!fs.existsSync(UPLOADS_DIR)) {
   fs.mkdirSync(UPLOADS_DIR, { recursive: true });
 }

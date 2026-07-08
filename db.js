@@ -2,7 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
-const DB_PATH = path.join(__dirname, 'db.json');
+const persistentDir = process.env.PERSISTENT_DIR || __dirname;
+if (persistentDir !== __dirname && !fs.existsSync(persistentDir)) {
+  fs.mkdirSync(persistentDir, { recursive: true });
+}
+const DB_PATH = path.join(persistentDir, 'db.json');
 
 // Initialize database template
 const defaultDb = {
