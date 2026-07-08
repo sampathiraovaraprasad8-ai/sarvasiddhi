@@ -301,7 +301,10 @@ export default function Products() {
                       accept="image/*"
                       style={{ padding: '8px' }}
                     />
-                    {uploading && <span style={{ fontSize: '0.8rem', color: 'var(--color-accent-dark)' }}>Uploading file...</span>}
+                    <small style={{ color: 'var(--color-text-muted)', display: 'block', marginTop: '4px', fontSize: '0.75rem' }}>
+                      {isEditing ? "Leave empty to keep current photo" : "Select a photo from your computer"}
+                    </small>
+                    {uploading && <span style={{ fontSize: '0.8rem', color: 'var(--color-accent-dark)', display: 'block', marginTop: '4px' }}>Uploading file...</span>}
                   </div>
                 </div>
               </div>
@@ -373,7 +376,7 @@ export default function Products() {
 
             <div style={{ display: 'flex', gap: '15px', justifyContent: 'flex-end', borderTop: '1px solid rgba(0,0,0,0.08)', paddingTop: '20px', marginTop: '20px' }}>
               <button type="button" onClick={handleCancelForm} className="btn btn-secondary">Cancel</button>
-              <button type="submit" className="btn btn-accent">{isEditing ? 'Save Changes' : 'Create Product'}</button>
+              <button type="submit" className="btn btn-accent" disabled={uploading}>{uploading ? 'Uploading Photo...' : isEditing ? 'Save Changes' : 'Create Product'}</button>
             </div>
           </form>
         </div>

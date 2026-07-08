@@ -181,7 +181,7 @@ export default function Checkout() {
               />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <div className="checkout-form-row">
               <div className="form-group">
                 <label className="form-label">Email Address (Optional)</label>
                 <input 
@@ -221,7 +221,7 @@ export default function Checkout() {
               />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+            <div className="checkout-form-row">
               <div className="form-group">
                 <label className="form-label">City *</label>
                 <input 
