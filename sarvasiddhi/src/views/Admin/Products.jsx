@@ -409,7 +409,7 @@ export default function Products() {
                       src={prod.image_url} 
                       alt={prod.title} 
                       style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px', border: '1px solid rgba(0,0,0,0.05)' }} 
-                      onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1609137144813-7d7274017b2b?q=80&w=600'; }}
+                      onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1609137144813-7d7274017b2b?q=80&w=600'; }}
                     />
                   </td>
                   <td>
